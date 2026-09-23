@@ -1,57 +1,58 @@
-# Site — Boost Studio
+# Site — Boost Studio · V2
 
-Prototype funcional de um gerador de vídeos verticais com animações originais.
+## O que mudou
 
-## Funcionalidades da V1
+A V2 corrige o problema principal da V1: isto **não é uma animação genérica**.
 
-- Login protegido por sessão.
-- Utilizador predefinido: @@BT@@admin@@BT@@
-- Password predefinida: @@BT@@admin 123@@BT@@
-- Editor com brawler, modo, pontos inicial/final, template e duração.
-- Preview em tempo real num canvas 1080x1920.
-- Motor de animação com vários templates.
-- Geração de um plano de render via Flask.
-- Exportação real no browser para @@BT@@.webm@@BT@@ através de @@BT@@MediaRecorder@@BT@@.
-- Backend Python/Flask iniciado diretamente em **porta 80**.
+O produto agora é um **Match-End Composer**. A saída é um ecrã final de partida composto por:
+
+1. um **frame-base** (podes carregar PNG/JPG/WEBP do teu próprio ficheiro);
+2. overlays de ícones;
+3. brawler;
+4. tipo de resultado;
+5. pontos antes/depois;
+6. elementos de vitória/rank.
+
+Tudo é desenhado localmente no browser, sem API externa.
+
+## Login
+
+Utilizador: `admin`
+
+Password: `admin123`
+
+## Porta
+
+`app.py` usa **porta 80**. Não usa 8080.
+
+## Exportação
+
+- PNG: frame final estático.
+- WebM: vídeo estático de 4 segundos com o mesmo frame final.
+
+O WebM existe para manter o fluxo de publicação em vídeo, mas a composição em si não introduz animações artificiais.
+
+## Assets
+
+A V2 não inventa um frame de partida real nem descarrega vídeos de terceiros. Para teres fidelidade visual, carrega na área "Frame base" um screenshot/frame que tenhas direito de utilizar.
+
+Os quatro slots de ícones funcionam localmente:
+- Brawler icon
+- Victory icon
+- Points icon
+- Avatar / badge
 
 ## Arranque
 
-@@BT@@@@BT@@@@BT@@bash
+```bash
 pip install -r requirements.txt
 python app.py
-@@BT@@@@BT@@@@BT@@
+```
 
-O servidor fica em:
+## Health check
 
-@@BT@@http://0.0.0.0:80@@BT@@
+`GET /health` devolve a versão e a porta configurada.
 
-Para alojamento, garante que a plataforma permite ao processo abrir a porta 80. Não uses 8080 para este projeto.
+## Versão
 
-## Variáveis de ambiente
-
-Podes substituir as credenciais de demonstração:
-
-@@BT@@@@BT@@@@BT@@bash
-ADMIN_USER=admin
-ADMIN_PASSWORD=admin 123
-SECRET_KEY=uma-chave-grande-e-aleatoria
-@@BT@@@@BT@@@@BT@@
-
-## Estrutura
-
-@@BT@@@@BT@@@@BT@@text
-.
-├── app.py
-├── requirements.txt
-├── README.md
-├── templates/
-│   ├── login.html
-│   └── index.html
-└── static/
-    ├── styles.css
-    └── app.js
-@@BT@@@@BT@@@@BT@@
-
-## Nota sobre assets
-
-A V1 usa gráficos e personagens desenhados no próprio canvas. Não depende de downloads de vídeos de terceiros nem de assets externos para funcionar. Isto deixa a base preparada para substituirmos os desenhos por assets próprios/licenciados numa fase seguinte.
+**V2**
