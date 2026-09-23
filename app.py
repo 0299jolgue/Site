@@ -7,9 +7,11 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "change-me-in-production")
 
 ADMIN_USER = os.getenv("ADMIN_USER", "admin")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin 123")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = 80
+VERSION = "v2"
 
 
 def login_required(view):
@@ -48,7 +50,7 @@ def logout():
 @app.get("/")
 @login_required
 def studio():
-    return render_template("index.html", username=session.get("username", "admin"))
+    return render_template("index.html", username=session.get("username", "admin"), version=VERSION)
 
 
 @app.post("/api/render-plan")
@@ -56,43 +58,39 @@ def studio():
 def render_plan():
     data = request.get_json(silent=True) or {}
 
-    brawler = str(data.get("brawler", "Nova"))[:32]
-    template = str(data.get("template", "victory"))[:32]
-    mode = str(data.get("mode", "Troféus"))[:32]
-
     try:
-        start = int(data.get("start", 500))
-        end = int(data.get("end", 575))
-        duration = float(data.get("duration", 6.5))
+        start = max(0, min(int(data.get("start", 500)), 99999))
+        end = max(0, min(int(data.get("end", 575)), 99999))
     except (TypeError, ValueError):
-        return jsonify({"error": "Valores numéricos inválidos."}), 400
+        return jsonify({"error": "Os pontos inicial/final têm de ser números."}), 400
 
-    start = max(0, min(start, 99999))
-    end = max(0, min(end, 99999))
-    duration = max(3.0, min(duration, 15.0))
+    brawler = str(data.get("brawler", "Brawler"))[:32]
+    mode = str(data.get("mode", "Troféus"))[:32]
+    template = str(data.get("template", "match-end"))[:32]
 
     return jsonify({
         "ok": True,
+        "version": VERSION,
         "plan": {
             "brawler": brawler,
-            "template": template,
             "mode": mode,
+            "template": template,
             "start": start,
             "end": end,
             "delta": end - start,
-            "duration": duration,
             "resolution": "1080x1920",
-            "format": "webm",
-            "source": "browser-canvas"
-        }
+            "composition": "static-match-end",
+            "export_formats": ["png", "webm"],
+            "source": "browser-canvas",
+        },
     })
 
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok"})
+    return jsonify({"status": "ok", "version": VERSION, "port": PORT})
 
 
 if __name__ == "__main__":
-    # Hosting target: port 80 (not 8080).
+    # Deploy requirement: this app intentionally listens on port 80, not 8080.
     app.run(host=HOST, port=PORT, debug=False)
