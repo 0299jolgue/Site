@@ -1,0 +1,8 @@
+VERSION: V1
+STATUS: ARCHIVED
+
+A V1 tinha um renderer Canvas de vitória genérico e uma timeline animada.
+
+Foi arquivada porque não correspondia ao conceito pretendido.
+A V2 substitui a abordagem por um compositor de ecrã final de partida estático:
+frame-base + ícones + valores editáveis.
