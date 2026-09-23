@@ -1,0 +1,19 @@
+VERSION: V3
+STATUS: ACTIVE
+RELEASE_DATE: 2026-09-23
+PORT: 80_DEFAULT_DYNAMIC_SUPPORTED
+
+V3 mantém o Match-End Composer da V2 e reforça o arranque para produção.
+
+Alterações:
+- PORT passa a aceitar a variável do ambiente;
+- fallback continua em porta 80;
+- HOST continua em 0.0.0.0;
+- porta validada entre 1 e 65535;
+- Gunicorn adicionado às dependências;
+- Procfile adicionado com comando web explícito;
+- /health continua disponível sem login;
+- VERSION passa para v3.
+
+Objetivo:
+reduzir falhas de arranque e 502 causados por incompatibilidade entre a porta exposta pelo proxy e a porta interna da aplicação.
