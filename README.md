@@ -1,58 +1,62 @@
-# Site — Boost Studio · V2
+# Site — Boost Studio · V3
 
-## O que mudou
+## V3: arranque e deploy mais robustos
 
-A V2 corrige o problema principal da V1: isto **não é uma animação genérica**.
+A V3 mantém o Match-End Composer da V2 e corrige a camada de arranque para evitar 502 causados por porta/processo.
 
-O produto agora é um **Match-End Composer**. A saída é um ecrã final de partida composto por:
+### O que foi corrigido
 
-1. um **frame-base** (podes carregar PNG/JPG/WEBP do teu próprio ficheiro);
-2. overlays de ícones;
-3. brawler;
-4. tipo de resultado;
-5. pontos antes/depois;
-6. elementos de vitória/rank.
+- HOST mantém 0.0.0.0;
+- a porta vem de PORT quando o ambiente fornece essa variável;
+- a porta padrão continua a ser 80;
+- a porta é validada antes do arranque;
+- foi adicionado Gunicorn para execução de produção;
+- foi adicionado um Procfile com comando web explícito;
+- /health continua público para verificações de saúde;
+- login, compositor, PNG e WebM continuam iguais à V2.
 
-Tudo é desenhado localmente no browser, sem API externa.
+A Shard Cloud confirma suporte a aplicações Python, deploy por GitHub e monitorização de logs/saúde da aplicação.
 
 ## Login
 
-Utilizador: `admin`
+Utilizador: admin
 
-Password: `admin123`
+Password: admin123
 
 ## Porta
 
-`app.py` usa **porta 80**. Não usa 8080.
+A aplicação usa PORT quando fornecida pelo ambiente. Sem essa variável, usa porta 80.
 
-## Exportação
+Isto permite funcionar tanto no requisito de porta 80 do projeto como em ambientes que atribuem uma porta interna dinamicamente.
 
-- PNG: frame final estático.
-- WebM: vídeo estático de 4 segundos com o mesmo frame final.
+## Arranque local
 
-O WebM existe para manter o fluxo de publicação em vídeo, mas a composição em si não introduz animações artificiais.
-
-## Assets
-
-A V2 não inventa um frame de partida real nem descarrega vídeos de terceiros. Para teres fidelidade visual, carrega na área "Frame base" um screenshot/frame que tenhas direito de utilizar.
-
-Os quatro slots de ícones funcionam localmente:
-- Brawler icon
-- Victory icon
-- Points icon
-- Avatar / badge
-
-## Arranque
-
-```bash
 pip install -r requirements.txt
 python app.py
-```
+
+## Arranque de produção
+
+O Procfile usa:
+
+web: gunicorn --bind 0.0.0.0:${PORT:-80} app:app
 
 ## Health check
 
-`GET /health` devolve a versão e a porta configurada.
+GET /health devolve a versão e a porta efetivamente usada.
+
+## Produto
+
+O produto continua a ser um Match-End Composer estático:
+
+- frame-base local;
+- quatro slots de ícones/overlays;
+- valores editáveis;
+- exportação PNG;
+- exportação WebM estática de 4 segundos;
+- sem API externa para os assets.
+
+Os assets devem ser do utilizador ou ter licença/permissão adequada.
 
 ## Versão
 
-**V2**
+V3 — ACTIVE
