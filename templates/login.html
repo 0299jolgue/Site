@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Boost Studio · Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <div class="brand-mark">BS</div>
+    <p class="eyebrow">BOOST STUDIO</p>
+    <h1>Entra no teu estúdio.</h1>
+    <p class="muted">Cria animações verticais originais a partir de um template e de alguns valores.</p>
+
+    <form class="auth-card" action="/login" method="post">
+      <label>
+        Utilizador
+        <input name="username" autocomplete="username" value="{{ request.form.get('username', '') }}" required>
+      </label>
+
+      <label>
+        Password
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+
+      {% if error %}
+      <div class="error-box">{{ error }}</div>
+      {% endif %}
+
+      <button class="primary-button wide" type="submit">Entrar no Studio</button>
+    </form>
+
+    <span class="auth-foot">V1 · Browser renderer · 1080×1920</span>
+  </main>
+</body>
+</html>
