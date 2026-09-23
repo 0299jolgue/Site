@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Boost Studio</title>
+  <title>Boost Studio · Match-End Composer</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -13,16 +13,14 @@
         <div class="brand-mark small">BS</div>
         <div>
           <strong>Boost Studio</strong>
-          <span>Original video builder</span>
+          <span>Match-End Composer · {{ version }}</span>
         </div>
       </div>
-
       <div class="topbar-actions">
         <span class="online-dot">Online</span>
         <span class="user-chip">{{ username }}</span>
-        <form action="/logout" method="post">
-          <button class="ghost-button" type="submit">Sair</button>
-        </form>
+        <span class="version-chip">{{ version }}</span>
+        <form action="/logout" method="post"><button class="ghost-button" type="submit">Sair</button></form>
       </div>
     </header>
 
@@ -30,59 +28,68 @@
       <section class="editor-panel panel">
         <div class="panel-heading">
           <div>
-            <p class="eyebrow">EDITOR</p>
-            <h1>Victory Composer</h1>
-            <p class="muted">Define os dados. O motor transforma-os numa sequência animada.</p>
+            <p class="eyebrow">MATCH-END COMPOSER</p>
+            <h1>Fim de partida</h1>
+            <p class="muted">Isto é uma composição estática de um ecrã final: frame-base + elementos sobrepostos. Não há animação genérica.</p>
           </div>
           <span class="status-pill">1080 × 1920</span>
         </div>
 
+        <div class="section-title">1 · Frame base</div>
+        <div class="upload-row">
+          <label class="upload-card">
+            <span class="upload-title">Imagem da partida</span>
+            <span class="upload-help">PNG/JPG · um frame de fim de partida</span>
+            <input id="baseImage" type="file" accept="image/png,image/jpeg,image/webp">
+          </label>
+          <button class="secondary-button" id="clearBase" type="button">Usar template base</button>
+        </div>
+
+        <div class="section-title">2 · Dados</div>
         <div class="form-grid">
           <label class="field"><span>Brawler</span><select id="brawler"></select></label>
           <label class="field"><span>Modo</span>
-            <select id="mode">
-              <option>Troféus</option><option>Ranked</option><option>Vitórias</option><option>Win Streak</option>
-            </select>
+            <select id="mode"><option>Troféus</option><option>Ranked</option><option>Vitórias</option><option>Win Streak</option></select>
           </label>
-          <label class="field"><span>Pontos iniciais</span><input id="start" type="number" min="0" max="99999" value="500"></label>
-          <label class="field"><span>Pontos finais</span><input id="end" type="number" min="0" max="99999" value="575"></label>
-          <label class="field field-wide"><span>Template de animação</span>
+          <label class="field"><span>Pontos antes</span><input id="start" type="number" min="0" max="99999" value="500"></label>
+          <label class="field"><span>Pontos depois</span><input id="end" type="number" min="0" max="99999" value="575"></label>
+          <label class="field field-wide"><span>Template</span>
             <select id="template">
-              <option value="victory">Victory Burst</option>
-              <option value="promotion">Rank Push</option>
-              <option value="streak">Win Streak</option>
+              <option value="match-end">Match End · Victory</option>
+              <option value="ranked-end">Match End · Ranked</option>
+              <option value="trophies-end">Match End · Trophies</option>
             </select>
           </label>
-          <label class="field"><span>Duração</span>
-            <select id="duration"><option value="5">5 s</option><option value="6.5" selected>6.5 s</option><option value="8">8 s</option><option value="10">10 s</option></select>
-          </label>
         </div>
 
-        <div class="delta-card">
-          <div><span class="muted">Variação</span><strong id="deltaValue">+75</strong></div>
-          <div class="delta-track"><div id="deltaBar"></div></div>
-          <span id="deltaText">500 → 575</span>
+        <div class="section-title">3 · Ícones sobrepostos</div>
+        <div class="asset-grid">
+          <label class="mini-upload"><span>Brawler icon</span><input id="brawlerImage" type="file" accept="image/png,image/jpeg,image/webp"></label>
+          <label class="mini-upload"><span>Victory icon</span><input id="victoryImage" type="file" accept="image/png,image/jpeg,image/webp"></label>
+          <label class="mini-upload"><span>Points icon</span><input id="pointsImage" type="file" accept="image/png,image/jpeg,image/webp"></label>
+          <label class="mini-upload"><span>Avatar / badge</span><input id="avatarImage" type="file" accept="image/png,image/jpeg,image/webp"></label>
         </div>
 
+        <div class="section-title">4 · Exportação</div>
         <div class="button-row">
-          <button class="secondary-button" id="previewBtn" type="button">▶ Pré-visualizar</button>
-          <button class="primary-button" id="exportBtn" type="button">● Exportar vídeo</button>
+          <button class="secondary-button" id="renderBtn" type="button">↻ Atualizar composição</button>
+          <button class="secondary-button" id="pngBtn" type="button">↓ PNG</button>
+          <button class="primary-button" id="webmBtn" type="button">● WebM</button>
         </div>
-
-        <div class="render-note" id="renderNote">O vídeo é renderizado no próprio browser e gravado para WebM; não depende de footage externo.</div>
+        <div class="render-note" id="renderNote">Sem API externa. Os ficheiros escolhidos no teu computador são desenhados diretamente por cima do frame.</div>
       </section>
 
       <section class="preview-panel">
         <div class="preview-head">
-          <div><p class="eyebrow">LIVE PREVIEW</p><h2>Frame Renderer</h2></div>
+          <div><p class="eyebrow">STATIC PREVIEW</p><h2>Ecrã final</h2></div>
           <span id="renderState" class="status-pill">Ready</span>
         </div>
-
-        <div class="phone-wrap"><canvas id="preview" width="1080" height="1920" aria-label="Preview da animação"></canvas></div>
-
-        <div class="timeline">
-          <div class="timeline-meta"><span>Timeline</span><span id="timeLabel">0.0 / 6.5s</span></div>
-          <div class="timeline-track"><div class="timeline-progress" id="timelineProgress"></div></div>
+        <div class="phone-wrap">
+          <canvas id="preview" width="1080" height="1920" aria-label="Composição final"></canvas>
+        </div>
+        <div class="preview-meta">
+          <span id="deltaLabel">+75</span>
+          <span id="dataLabel">500 → 575</span>
         </div>
       </section>
     </main>
