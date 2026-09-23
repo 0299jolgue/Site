@@ -10,8 +10,16 @@ ADMIN_USER = os.getenv("ADMIN_USER", "admin")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 
 HOST = os.getenv("HOST", "0.0.0.0")
-PORT = 80
-VERSION = "v2"
+# Shard/proxies may inject PORT. Keep 80 as the fallback required by this project.
+try:
+    PORT = int(os.getenv("PORT", "80"))
+except (TypeError, ValueError):
+    PORT = 80
+
+if not 1 <= PORT <= 65535:
+    PORT = 80
+
+VERSION = "v3"
 
 
 def login_required(view):
@@ -92,5 +100,5 @@ def health():
 
 
 if __name__ == "__main__":
-    # Deploy requirement: this app intentionally listens on port 80, not 8080.
+    # Local/default mode uses port 80; hosted environments can inject PORT.
     app.run(host=HOST, port=PORT, debug=False)
