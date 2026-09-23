@@ -1,20 +1,8 @@
 VERSION: V2
-STATUS: ACTIVE
+STATUS: ARCHIVED
 RELEASE_DATE: 2026-09-23
-PORT: 80
 
-V2 é a versão atualmente publicada no branch main.
+A V2 foi substituída pela V3.
 
-Principais alterações:
-- password corrigida para admin123;
-- app.py em porta 80;
-- conceito mudado para Match-End Composer;
-- composição estática de fim de partida;
-- upload de frame-base local;
-- quatro slots de ícones/overlays;
-- exportação PNG;
-- exportação WebM estática de 4 segundos;
-- sem API externa para os assets;
-- endpoint /health devolve version=v2.
-
-Não foi incluído um screenshot de terceiros inventado. A fidelidade ao ecrã real depende do frame-base que for carregado pelo utilizador.
+A V2 introduziu o Match-End Composer estático.
+A V3 mantém esse produto e corrige a camada de arranque/deploy.
